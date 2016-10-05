@@ -411,6 +411,13 @@ def test_error():
     assert_false(hasattr(BaggingClassifier(base).fit(X, y), 'decision_function'))
 
 
+def test_node_size():
+    clf = DecisionTreeClassifier().fit([[1,2,3],[4,5,6]],[0,1])
+    a, b = clf.tree_._sizeof_node()
+    print('Node size: {}; NODE_DTYPE size: {}'.format(a, b))
+    assert_equal(a, b)
+
+
 def test_parallel_classification():
     # Check parallel classification.
     rng = check_random_state(0)

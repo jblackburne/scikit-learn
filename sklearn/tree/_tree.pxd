@@ -77,6 +77,7 @@ cdef class Tree:
     cdef object _decision_path_sparse_csr(self, object X)
 
     cpdef compute_feature_importances(self, normalize=*)
+    cpdef _sizeof_node(self)
 
 
 # =============================================================================

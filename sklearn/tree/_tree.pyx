@@ -70,7 +70,7 @@ NODE_DTYPE = np.dtype({
     'names': ['left_child', 'right_child', 'feature', 'threshold', 'impurity',
               'n_node_samples', 'weighted_n_node_samples', 'foo'],
     'formats': [np.intp, np.intp, np.intp, np.float64, np.float64, np.intp,
-                np.float64, np.uint64],
+                np.float64, np.intp],
     'offsets': [
         <Py_ssize_t> &(<Node*> NULL).left_child,
         <Py_ssize_t> &(<Node*> NULL).right_child,
@@ -1072,6 +1072,9 @@ cdef class Tree:
                 importances /= normalizer
 
         return importances
+
+    cpdef _sizeof_node(self):
+        return (sizeof(Node), (<np.dtype> NODE_DTYPE).itemsize)
 
     cdef np.ndarray _get_value_ndarray(self):
         """Wraps value as a 3-d NumPy array.
