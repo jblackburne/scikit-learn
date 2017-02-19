@@ -1665,3 +1665,33 @@ def test_no_sparse_with_categorical():
     # Currently we do not support sparse categorical features
     for name in SPARSE_TREES:
         yield check_no_sparse_with_categorical, name
+
+
+def check_categorical(name):
+    # Toy dataset where both the standard and one-hot approaches yield
+    # non-zero train error when the tree is restricted to a single split
+    X = [[0], [1], [2], [3]]
+    y = [0, 1, 0, 1]
+    # Using this fixed random seed because it happens to generate a perfect
+    # split in this case for extra-random trees
+    seed = 2
+    clf = ALL_TREES[name](max_depth=1, categorical='all', random_state=seed)
+    assert_array_almost_equal(clf.fit(X, y).predict(X), y)
+
+
+def test_categorical():
+    for name in ALL_TREES:
+        yield check_categorical, name
+
+
+def check_non_breiman_shortcut_categorical(name):
+    # Cannot use the Breiman sorting shortcut with non-binary classification
+    X = [[0], [1], [2], [3]]
+    y = [0, 1, 2, 1]
+    Tree = ALL_TREES[name]
+    assert_array_equal(Tree(categorical=[0]).fit(X, y).predict(X), y)
+
+
+def test_non_breiman_shortcut_categorical():
+    for name in CLF_TREES:
+        yield check_non_breiman_shortcut_categorical, name
